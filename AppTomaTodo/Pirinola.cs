@@ -43,7 +43,7 @@ namespace AppTomaTodo
             int valor = r.Next(6);
             switch (valor)
             {
-                case 0:
+                case 0: // Toma Todo
                     if (EsTurnoJugador)
                     {
                         FichasJugador += Pozo;
@@ -55,46 +55,42 @@ namespace AppTomaTodo
                         ComputadoraPozo?.Invoke(Pozo);
                     }
                     Pozo = 0;
-                    JugadorPozo?.Invoke(1);
-                    ComputadoraPozo?.Invoke(1);
+                    TodosPonen();
                     break;
-                case 1:
+                case 1: // Pon 1
                     if (EsTurnoJugador)
                     {
-                        JugadorPozo?.Invoke(-1);
                         FichasJugador--;
-                        if (FichasJugador <= 0)
-                        {
-                            JugadorPierde?.Invoke();
-                        }
+                        JugadorPozo?.Invoke(-1);
+                        
+                        
                     }
                     else
                     {
-                        ComputadoraPozo?.Invoke(-1);
                         FichasComputadora--;
-                        if (FichasComputadora<=0)
-                        {
-                            JugadorGana?.Invoke();
-                        }
+                        ComputadoraPozo?.Invoke(-1);
+                        
+                        
                     }
                     Pozo++;
                     break;
-                case 2:
+                case 2: // Toma 2
                     if (EsTurnoJugador)
                     {
                         if (Pozo>2)
                         {
+                            FichasJugador += 2;
                             JugadorPozo?.Invoke(2);
-                            FichasJugador+=2;
+                            
                             Pozo -= 2;
                         }
                         else
                         {
-                            JugadorPozo?.Invoke(Pozo);
                             FichasJugador += Pozo;
+                            JugadorPozo?.Invoke(Pozo);
+         
                             Pozo = 0;
-                            JugadorPozo?.Invoke(1);
-                            ComputadoraPozo?.Invoke(1);
+                            TodosPonen();
                         }
                         
                     }
@@ -111,17 +107,75 @@ namespace AppTomaTodo
                             ComputadoraPozo?.Invoke(Pozo);
                             FichasComputadora += Pozo;
                             Pozo = 0;
-                            JugadorPozo?.Invoke(1);
-                            ComputadoraPozo?.Invoke(1);
+                            TodosPonen();
                         }
 
                     }
                     
                     break;
+                case 3: // Todos ponen
+                    TodosPonen();
+                    break;
+                case 4: //Toma 1
+                    if (EsTurnoJugador)
+                    {
+                        FichasJugador++;
+                        JugadorPozo?.Invoke(1);
+                    }
+                    else
+                    {
+                        FichasComputadora++;
+                        ComputadoraPozo?.Invoke(1);
+                    }
+                    Pozo--;
+                    if (Pozo==0)
+                    {
+                        TodosPonen();
+                    }
+                    break;
+                case 5: //Pon 2
+                    if (EsTurnoJugador)
+                    {
+                        if (FichasJugador>2)
+                        {
+                            FichasJugador -= 2;
+                            JugadorPozo?.Invoke(-2);
+                        }
+                        else
+                        {
+                            int fichas = FichasJugador;
+                            FichasJugador = 0;
+                            JugadorPozo?.Invoke(fichas * -1);
+                            JugadorPierde?.Invoke();
+                        }
+                    }
+                    else
+                    {
+                        if (FichasComputadora > 2)
+                        {
+                            FichasComputadora -= 2;
+                            ComputadoraPozo?.Invoke(-2);
+                        }
+                        else {
+                            int fichas = FichasComputadora;
+                            FichasComputadora = 0;
+                            ComputadoraPozo?.Invoke(fichas * -1);
+                            JugadorGana?.Invoke();
+                        }
+                    }
+                    break;
                 default:
                     break;
             }
             return valor;
+        }
+
+        private void TodosPonen()
+        {
+            FichasJugador--;
+            FichasComputadora--;
+            JugadorPozo?.Invoke(-1);
+            ComputadoraPozo?.Invoke(-1);
         }
     }
 }
