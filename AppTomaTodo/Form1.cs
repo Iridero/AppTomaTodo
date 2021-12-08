@@ -21,6 +21,8 @@ namespace AppTomaTodo
         {
             
         }
+        bool esTurnoJugador;
+        bool juegoIniciado = false;
         int vueltas = 0;
         int actual = 0;
         int cara = 0;
@@ -53,9 +55,54 @@ namespace AppTomaTodo
 
         private void lblPirinola_Click(object sender, EventArgs e)
         {
-            Random random = new Random();
-            cara = random.Next(6);
+            if (!juegoIniciado)
+            {
+                pirinola.IniciarJuego();
+                actual = 0;
+            }
+            cara = pirinola.GirarPirinola(esTurnoJugador);
+            esTurnoJugador = !esTurnoJugador;
+            vueltas = 0;
+            tmrGiro.Interval = 200;
             tmrGiro.Start();
+            /*Random random = new Random();
+            cara = random.Next(6);
+            tmrGiro.Start(); */
+        }
+        Pirinola pirinola = new Pirinola();
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            pirinola.JugadorGana += Pirinola_JugadorGana;
+            pirinola.JugadorPierde += Pirinola_JugadorPierde;
+            pirinola.JugadorPozo += Pirinola_JugadorPozo;
+            pirinola.ComputadoraPozo += Pirinola_ComputadoraPozo;
+        }
+
+        private void Pirinola_ComputadoraPozo(int cantidad)
+        {
+            lblPozo.Text=$"Pozo: {pirinola.Pozo}";
+            chkComputadora.Text = $"Computadora: {pirinola.FichasComputadora}";
+        }
+
+       
+
+        private void Pirinola_JugadorPozo(int cantidad)
+        {
+            lblPozo.Text = $"Pozo: {pirinola.Pozo}";
+            chkJugador.Text = $"Jugador: {pirinola.FichasComputadora}";
+        }
+
+        private void Pirinola_JugadorPierde()
+        {
+            MessageBox.Show("Lo siento, perdiste :(");
+            juegoIniciado = false;
+        }
+
+        private void Pirinola_JugadorGana()
+        {
+            MessageBox.Show("Felicidades, Ganaste!");
+            
+            juegoIniciado = false;
         }
     }
 }
